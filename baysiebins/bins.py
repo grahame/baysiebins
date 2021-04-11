@@ -86,7 +86,7 @@ def json_to_ical(obj):
         event.add("dtend", end)
         cal.add_component(event)
 
-    return flask.Response(cal.to_ical(), "text/calendar")
+    return flask.Response(cal.to_ical(), mimetype="text/calendar", status=200)
 
 
 @app.route("/<address>.ics")
