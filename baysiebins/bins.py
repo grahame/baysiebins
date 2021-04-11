@@ -41,8 +41,10 @@ def next_weekday(d, weekday):
 
 def json_to_ical(obj):
     cal = icalendar.Calendar()
-    cal.add("prodid", "-//Bayswater Bins//mxm.dk//")
+    cal.add("prodid", "-//grahame.dev//mxm.dk//EN")
     cal.add("version", "2.0")
+    cal.add("name", "Bayswater Bins")
+    cal.add("timezone-id", "Australia/Perth")
 
     # figure out our binday
     lookup = {
