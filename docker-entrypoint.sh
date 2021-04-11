@@ -2,8 +2,8 @@
 
 CMD="$1"
 echo "command is: " $CMD
-if [ "$CMD" = "uwsgi" ]; then
-   uwsgi -H /venv --uid 1000 --socket 0.0.0.0:5000 --protocol=http -w baysiebins.wsgi:app
+if [ "$CMD" = "gunicorn" ]; then
+   gunicorn -w 3 --bind=0.0.0.0:5000 baysiebins.wsgi:app
    exit
 fi
 
