@@ -14,12 +14,12 @@ classifiers = [
   "Operating System :: POSIX",
 ]
 
-[tool.poetry.scripts]
-baysiebins = 'baysiebins.cli:cli'
-
 [tool.poetry.dependencies]
 python = ">=3.7"
 requests = "^2.23.0"
+Flask = "^1.1.2"
+icalendar = "^4.0.7"
+pytz = "^2021.1"
 
 [tool.poetry.dev-dependencies]
 black = "^19.10b0"
