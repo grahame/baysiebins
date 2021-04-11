@@ -4,6 +4,7 @@ import requests
 import icalendar
 import pytz
 import datetime
+import hashlib
 
 app = Flask(__name__)
 
@@ -39,12 +40,13 @@ def next_weekday(d, weekday):
     return d + datetime.timedelta(days_ahead)
 
 
-def json_to_ical(obj):
+def json_to_ical(address, obj):
     cal = icalendar.Calendar()
     cal.add("prodid", "-//grahame.dev//mxm.dk//EN")
     cal.add("version", "2.0")
     cal.add("name", "Bayswater Bins")
-    cal.add("timezone-id", "Australia/Perth")
+    cal.add("dtstamp", datetime.date.today())
+    cal.add("uid", hashlib.md5(address.encode("utf8")).hexdigest())
 
     # figure out our binday
     lookup = {
@@ -63,11 +65,9 @@ def json_to_ical(obj):
 
     # in reality for now this is general waste; baysie devs might change this though
     redbin_dt = get_refuse_date("NextGreenWasteCollection")
-    yellowbin_dt = get_refuse_date("NextRecyclingCollection")
 
     binday = obj["DomesticWasteCollection"]
     start_dt = next_weekday(datetime.date.today(), lookup[binday])
-    perth = pytz.timezone("Australia/Perth")
     for week in range(-12, 13):
         bin_dt = start_dt + datetime.timedelta(days=7 * week)
 
@@ -76,16 +76,21 @@ def json_to_ical(obj):
         else:
             thisbin = "Yellow"
         event_dt = bin_dt + datetime.timedelta(days=-1)
+        # NB hacky timezone conversion, 8 hours offset, timezones in ical are a pain
         start = datetime.datetime(
-            event_dt.year, event_dt.month, event_dt.day, 20, 0, 0, tzinfo=perth
+            event_dt.year, event_dt.month, event_dt.day, 12, 0, 0, tzinfo=pytz.utc
         )
         end = datetime.datetime(
-            event_dt.year, event_dt.month, event_dt.day, 21, 0, 0, tzinfo=perth
+            event_dt.year, event_dt.month, event_dt.day, 13, 0, 0, tzinfo=pytz.utc
         )
         event = icalendar.Event()
         event.add("summary", "Put the bins out: Green and {}".format(thisbin))
         event.add("dtstart", start)
         event.add("dtend", end)
+        event.add("dtstamp", start)
+        event.add(
+            "uid", hashlib.md5((address + ":" + str(bin_dt)).encode("utf8")).hexdigest()
+        )
         cal.add_component(event)
 
     return flask.Response(cal.to_ical(), mimetype="text/calendar", status=200)
@@ -96,4 +101,4 @@ def hello_world(address):
     obj = get_bin_json(address)
     if not obj:
         flask.abort(404)
-    return json_to_ical(obj)
+    return json_to_ical(address, obj)
