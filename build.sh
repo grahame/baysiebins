@@ -2,6 +2,6 @@
 
 set -e
 
-docker build -t angrygoat/baysiebins .
+docker build -t angrygoat/baysiebins . &&
 docker push angrygoat/baysiebins
 
