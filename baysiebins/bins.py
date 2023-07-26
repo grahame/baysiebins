@@ -37,7 +37,7 @@ def get_bin_json(address):
     url = "https://citymapsdev.bayswater.wa.gov.au/arcgis/rest/services/BayswaterExternal/PropertyAddressAGOL_WasteNew_WEB/MapServer/0/query"
     response = session.get(
         url,
-        {
+        params={
             "f": "json",
             "where": "PropertyAddress='{}'".format(address),
             "returnGeometry": "true",
