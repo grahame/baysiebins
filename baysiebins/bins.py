@@ -1,17 +1,36 @@
 from flask import Flask
 import flask
-import requests
 import icalendar
 import pytz
 import datetime
 import hashlib
+import ssl
+import urllib3
+import requests
+
+class CustomHttpAdapter (requests.adapters.HTTPAdapter):
+    '''Transport adapter" that allows us to use custom ssl_context.'''
+
+    def __init__(self, ssl_context=None, **kwargs):
+        self.ssl_context = ssl_context
+        super().__init__(**kwargs)
+
+    def init_poolmanager(self, connections, maxsize, block=False):
+        self.poolmanager = urllib3.poolmanager.PoolManager(
+            num_pools=connections, maxsize=maxsize,
+            block=block, ssl_context=self.ssl_context)
+
+ctx = ssl.create_default_context(ssl.Purpose.SERVER_AUTH)
+session = requests.session()
+ctx.options |= 0x4
+session.mount('https://', CustomHttpAdapter(ctx))
 
 app = Flask(__name__)
 
 
 def get_bin_json(address):
     url = "https://citymapsdev.bayswater.wa.gov.au/arcgis/rest/services/BayswaterExternal/PropertyAddressAGOL_WasteNew_WEB/MapServer/0/query"
-    response = requests.get(
+    response = session.get(
         url,
         {
             "f": "json",

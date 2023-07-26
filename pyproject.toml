@@ -18,7 +18,7 @@ classifiers = [
 python = ">=3.9,<4"
 Flask = "^2.1.1"
 icalendar = "^4.0.7"
-requests = "^2.27.1"
+requests = "2.31.0"
 pytz = "*"
 gunicorn = "*"
 
