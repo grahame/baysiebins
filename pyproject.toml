@@ -16,14 +16,14 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.9,<4"
-Flask = "^2.3.2"
-icalendar = "^5.0.7"
+Flask = "^3.0.3"
+icalendar = "^5.0.12"
 requests = "2.31.0"
-pytz = "^2023.3"
-gunicorn = "^21.2.0"
+pytz = "^2024.1"
+gunicorn = "^22.0.0"
 
 [tool.poetry.dev-dependencies]
-black = "^23.7.0"
-flake8 = "^6.0.0"
-pytest = "^7.4.0"
+black = "^24.4.2"
+flake8 = "^7.0.0"
+pytest = "^8.2.2"
 
