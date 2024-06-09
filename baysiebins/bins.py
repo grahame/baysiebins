@@ -96,9 +96,9 @@ def json_to_ical(address, obj):
         bin_dt = start_dt + datetime.timedelta(days=7 * week)
 
         if (bin_dt - redbin_dt).days % 14 == 0:
-            thisbin = "Red"
+            thisbin = "🔴"
         else:
-            thisbin = "Yellow"
+            thisbin = "🟡"
         event_dt = bin_dt + datetime.timedelta(days=-1)
         # NB hacky timezone conversion, 8 hours offset, timezones in ical are a pain
         start = datetime.datetime(
@@ -108,7 +108,7 @@ def json_to_ical(address, obj):
             event_dt.year, event_dt.month, event_dt.day, 13, 0, 0, tzinfo=pytz.utc
         )
         event = icalendar.Event()
-        event.add("summary", "Put the bins out: Green and {}".format(thisbin))
+        event.add("summary", "🗑️: {}".format(thisbin))
         event.add("dtstart", start)
         event.add("dtend", end)
         event.add("dtstamp", start)
